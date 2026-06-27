@@ -1,0 +1,1 @@
+{"version":3,"file":"mail.enum.js","sourceRoot":"","sources":["../../../src/common/enum/mail.enum.ts"],"names":[],"mappings":";;AAAA,MAAM,QAAQ,GAAG;IACf,QAAQ,EAAE,YAAY;IACtB,aAAa,EAAE,uBAAuB;IACtC,cAAc,EAAE,sBAAsB;IACtC,cAAc,EAAE,aAAa;IAC7B,mBAAmB,EAAE,8BAA8B;CACpD,CAAC;AAEF,kBAAe,QAAQ,CAAC"}

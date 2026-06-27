@@ -16,6 +16,7 @@ const app_service_1 = require("./app.service");
 const user_module_1 = __importDefault(require("./module/user/user.module"));
 const mongoose_1 = require("@nestjs/mongoose");
 const config_1 = require("@nestjs/config");
+const redis_module_1 = __importDefault(require("./common/redis/redis.module"));
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -35,6 +36,7 @@ exports.AppModule = AppModule = __decorate([
                 },
             }),
             user_module_1.default,
+            redis_module_1.default,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

@@ -20,10 +20,11 @@ import redisModule from './common/redis/redis.module';
         return connection;
       },
     }),
-    redisModule,
     userModule,
+    redisModule,
   ],
   controllers: [AppController],
+
   providers: [AppService],
 })
 export class AppModule {}

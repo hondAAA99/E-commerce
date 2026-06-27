@@ -36,6 +36,9 @@ export class User {
 
   @Prop({ type: String, default: roleEnum.user, enum: roleEnum })
   role: string;
+
+  @Prop({ type: Date })
+  credentials: Date;
 }
 
 export const userSchema = SchemaFactory.createForClass(User);

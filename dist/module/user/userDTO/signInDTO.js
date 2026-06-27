@@ -8,21 +8,22 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const common_1 = require("@nestjs/common");
-const user_repo_1 = __importDefault(require("../../DataBase/repos/user.repo"));
-let userServicesHelpers = class userServicesHelpers {
-    _userModel;
-    constructor(_userModel) {
-        this._userModel = _userModel;
-    }
-};
-userServicesHelpers = __decorate([
-    (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [user_repo_1.default])
-], userServicesHelpers);
-exports.default = userServicesHelpers;
-//# sourceMappingURL=services.helpers.js.map
+exports.signInDTO = void 0;
+const class_validator_1 = require("class-validator");
+class signInDTO {
+    email;
+    password;
+}
+exports.signInDTO = signInDTO;
+__decorate([
+    (0, class_validator_1.IsNotEmpty)({ message: 'email should not be empty' }),
+    (0, class_validator_1.IsEmail)({}, { message: 'wrong email formation' }),
+    __metadata("design:type", String)
+], signInDTO.prototype, "email", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)({ message: 'password should not be empty' }),
+    (0, class_validator_1.IsString)({ message: 'password must be of type string' }),
+    __metadata("design:type", String)
+], signInDTO.prototype, "password", void 0);
+//# sourceMappingURL=signInDTO.js.map

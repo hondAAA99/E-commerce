@@ -6,16 +6,18 @@ import { HUDoc } from '../../DataBase/models/user/user.model';
 import mongoose from 'mongoose';
 import redisService from '../../common/services/redis.services';
 import { signInDTO } from './userDTO/signInDTO';
-import jwtServices from '../../common/utils/security/jsonWebTokens';
+import jwtServices from '../../common/services/jsonWebTokens';
 import { roleEnum } from '../../common/enum/user.enum';
 import crypto from 'node:crypto';
+import s3services from '../../common/services/s3Services';
 
 @Injectable()
 class userServices {
   constructor(
     private readonly _userModel: userRepo,
     private readonly _redis: redisService,
-    private readonly jwtServices: jwtServices
+    private readonly jwtServices: jwtServices,
+    private readonly s3Services: s3services
   ) {}
 
   signUp = async (body: signUpDTO): Promise<HUDoc> => {
@@ -40,11 +42,11 @@ class userServices {
     const { email, password } = body;
     const user = await this._userModel.findOne({ filter: { email } });
     if (!user) throw new HttpException('user not found', 305);
-
+    console.log(user);
     if (!globalCompare(password, user?.password))
       throw new HttpException('incorrect password', 305);
 
-    const accessToken = this.jwtServices.generateToken({
+    const accessToken = await this.jwtServices.generateToken({
       payload: { userId: user.id, userRole: user.role },
       options: {
         secret:
@@ -57,7 +59,7 @@ class userServices {
       },
     });
 
-    const refreshToken = this.jwtServices.generateToken({
+    const refreshToken = await this.jwtServices.generateToken({
       payload: { userId: user.id, userRole: user.role },
       options: {
         secret:
@@ -72,6 +74,29 @@ class userServices {
 
     return { accessToken, refreshToken };
   };
+
+  upload = async (file: Express.Multer.File) => {
+    return this.s3Services.uploadFile({
+      file,
+      path: `photos`,
+    });
+  };
+
+  uploadLargeFile = async (file: Express.Multer.File) => {
+    return this.s3Services.uploadLargeFile({
+      file,
+      path: 'photos',
+    });
+  };
+
+  // uploadLageFiles = async (files: Express.Multer.File[]) => {
+  //   return this.s3Services.uploadFiles({
+  //     files,
+  //     large: files.map((file) => {
+  //       return file.size > 5 * 5 * 1024 * 1024;
+  //     }),
+  //   });
+  // };
 }
 
 export default userServices;

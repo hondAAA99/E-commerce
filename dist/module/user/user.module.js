@@ -14,22 +14,17 @@ const user_controller_1 = __importDefault(require("./user.controller"));
 const user_service_1 = __importDefault(require("./user.service"));
 const user_repo_1 = __importDefault(require("../../DataBase/repos/user.repo"));
 const user_model_1 = require("../../DataBase/models/user/user.model");
+const redis_services_1 = __importDefault(require("../../common/services/redis.services"));
+const redis_module_1 = __importDefault(require("../../common/redis/redis.module"));
+const jsonWebTokens_1 = __importDefault(require("../../common/utils/security/jsonWebTokens"));
+const jwt_1 = require("@nestjs/jwt");
 let userModule = class userModule {
 };
 userModule = __decorate([
     (0, common_1.Module)({
-        imports: [user_model_1.userDataBaseModule],
+        imports: [user_model_1.userDataBaseModule, redis_module_1.default],
         controllers: [user_controller_1.default],
-        providers: [
-            user_service_1.default,
-            user_repo_1.default,
-            {
-                provide: 'REDIS_CLIENT',
-                useFactory: async () => {
-                    const client = ;
-                },
-            },
-        ],
+        providers: [user_service_1.default, user_repo_1.default, redis_services_1.default, jsonWebTokens_1.default, jwt_1.JwtService],
     })
 ], userModule);
 exports.default = userModule;

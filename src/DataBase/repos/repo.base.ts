@@ -24,8 +24,8 @@ abstract class repoBase<Tdocument> {
       .find(filter, projection)
       .skip(options?.skip!)
       .limit(options?.limit!)
-      .sort(options?.sort)
-      .populate(options?.populate as PopulateOptions);
+      .sort(options?.sort);
+    // .populate(options?.populate as PopulateOptions);
   }
 
   async findOne({
@@ -40,8 +40,8 @@ abstract class repoBase<Tdocument> {
     return await this._model
       .findOne(filter)
       .sort(options?.sort)
-      .populate(options?.populate as PopulateOptions)
-      .projection(projection);
+      .populate(options?.populate as PopulateOptions);
+    // .projection(projection);
   }
 
   async findById({

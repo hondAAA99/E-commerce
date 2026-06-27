@@ -13,15 +13,13 @@ class repoBase {
             .find(filter, projection)
             .skip(options?.skip)
             .limit(options?.limit)
-            .sort(options?.sort)
-            .populate(options?.populate);
+            .sort(options?.sort);
     }
     async findOne({ filter, projection, options, }) {
         return await this._model
             .findOne(filter)
             .sort(options?.sort)
-            .populate(options?.populate)
-            .projection(projection);
+            .populate(options?.populate);
     }
     async findById({ id, projection, options, }) {
         return await this._model

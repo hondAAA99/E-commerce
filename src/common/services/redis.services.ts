@@ -48,7 +48,7 @@ class redisService {
       const value = await this._client.get(key);
       try {
         return JSON.parse(value as string);
-      } catch () {
+      } catch (err) {
         return value as string;
       }
     } catch (err) {

@@ -1,11 +1,10 @@
 import { Global, HttpException, Module } from '@nestjs/common';
-
-import redis from 'redis';
+import * as redis from 'redis';
 import redisService from '../services/redis.services';
 
 @Global()
 @Module({
-  imports: [redisService],
+  imports: [],
   controllers: [],
   providers: [
     redisService,
