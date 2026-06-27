@@ -56,7 +56,7 @@ class userController {
     )
   )
   uploadFile(@UploadedFile() file: Express.Multer.File) {
-    return this._userServices.uploadFile;
+    return this._userServices.upload;
   }
 
   @Post('/upload-large-file')
