@@ -89,35 +89,33 @@ class s3services {
     return command.done;
   }
 
-  // async uploadFiles({
-  //   files,
-  //   storageType = multerStorageEnum.memory,
-  //   ACL,
-  //   path,
-  //   large,
-  // }: {
-  //   files: Express.Multer.File[];
-  //   storageType?: string;
-  //   ACL?: ObjectCannedACL;
-  //   path?: string | undefined;
-  //   large: boolean[];
-  // }): Promise<string[] | any> {
-  //   if (!large) {
-  //     const urls = await Promise.all(
-  //       files.map((file: Express.Multer.File) => {
-  //         this.uploadFile({ file, storageType, path });
-  //       })
-  //     );
-  //     return urls;
-  //   } else {
-  //     const urls = await Promise.all(
-  //       files.map((file: Express.Multer.File) => {
-  //         this.uploadLargeFile({ file, storageType, path });
-  //       })
-  //     );
-  //     return urls;
-  //   }
-  // }
+  async uploadFiles({
+    files,
+    storageType = multerStorageEnum.memory,
+    ACL,
+    path,
+  }: {
+    files: Express.Multer.File[];
+    storageType?: string;
+    ACL?: ObjectCannedACL;
+    path?: string | undefined;
+  }): Promise<string[] | any> {
+    files.map(async (file) => {
+      if (file.size > 5 * 1026 * 1026) {
+        await this.uploadLargeFile({
+          file,
+          path,
+          storageType,
+        });
+      } else {
+        await this.uploadFile({
+          file,
+          path,
+          storageType,
+        });
+      }
+    });
+  }
 
   async createSignedUrl({
     fileName,

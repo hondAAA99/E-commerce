@@ -4,6 +4,7 @@ import { UpdateQuery } from 'mongoose';
 import { ProjectionType } from 'mongoose';
 import { HydratedDocument, Model, QueryFilter, Schema } from 'mongoose';
 
+
 abstract class repoBase<Tdocument> {
   constructor(protected readonly _model: Model<Tdocument>) {}
 

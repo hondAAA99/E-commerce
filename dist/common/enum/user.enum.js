@@ -1,12 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.genderEnum = exports.roleEnum = void 0;
-exports.roleEnum = {
-    user: 'user',
-    admin: 'admin',
-};
-exports.genderEnum = {
-    male: 'male',
-    female: 'female',
-};
+var roleEnum;
+(function (roleEnum) {
+    roleEnum["user"] = "user";
+    roleEnum["admin"] = "admin";
+})(roleEnum || (exports.roleEnum = roleEnum = {}));
+var genderEnum;
+(function (genderEnum) {
+    genderEnum["male"] = "male";
+    genderEnum["female"] = "female";
+})(genderEnum || (exports.genderEnum = genderEnum = {}));
 //# sourceMappingURL=user.enum.js.map

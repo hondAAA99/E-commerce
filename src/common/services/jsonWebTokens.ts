@@ -65,11 +65,7 @@ class jwtServices {
       id: verify.userId,
     });
     if (!user) throw new BadRequestException('user does not exists');
-    if (
-      user!.credentials &&
-      user!.credentials.getTime() < (verify.iat as number) * 1000
-    ) {
-      console.log({ 1: user!.credentials, 2: user!.credentials.getTime() });
+    if (user!.credentials && user!.credentials < verify.iat * 1000) {
       throw new BadRequestException('token revoked please login again');
     }
 

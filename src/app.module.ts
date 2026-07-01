@@ -5,6 +5,9 @@ import userModule from './module/user/user.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import redisModule from './common/redis/redis.module';
+import brandModule from './module/brand/brand.module';
+import categoryModule from './module/category/category.module';
+import productModule from './module/product/product.module';
 
 @Module({
   imports: [
@@ -14,7 +17,7 @@ import redisModule from './common/redis/redis.module';
     }),
     MongooseModule.forRoot(process.env.MONGO_URI!, {
       onConnectionCreate: (connection) => {
-        connection.on('connection', () => {
+        connection.on('connect', () => {
           console.log('connected to dataBase');
         });
         return connection;
@@ -22,6 +25,9 @@ import redisModule from './common/redis/redis.module';
     }),
     userModule,
     redisModule,
+    brandModule,
+    categoryModule,
+    productModule,
   ],
   controllers: [AppController],
 

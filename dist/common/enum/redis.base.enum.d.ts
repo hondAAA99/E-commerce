@@ -1,7 +1,13 @@
 declare const cacheKeyEnum: {
-    block: string;
+    revokeToken: string;
     emailAttempts: string;
-    userVerification: string;
-    passwordReset: string;
+    block: string;
+    fcm: string;
+    socket: string;
+    story: string;
+    confirmSingUp: string;
+    confirmLoginIn: string;
+    forgetPassword: string;
+    twoStepVerification: string;
 };
 export default cacheKeyEnum;

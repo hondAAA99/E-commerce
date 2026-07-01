@@ -16,17 +16,20 @@ const common_1 = require("@nestjs/common");
 const user_repo_1 = __importDefault(require("../../DataBase/repos/user.repo"));
 const hash_1 = require("../../common/utils/security/hash");
 const redis_services_1 = __importDefault(require("../../common/services/redis.services"));
-const jsonWebTokens_1 = __importDefault(require("../../common/utils/security/jsonWebTokens"));
+const jsonWebTokens_1 = __importDefault(require("../../common/services/jsonWebTokens"));
 const user_enum_1 = require("../../common/enum/user.enum");
 const node_crypto_1 = __importDefault(require("node:crypto"));
+const s3Services_1 = __importDefault(require("../../common/services/s3Services"));
 let userServices = class userServices {
     _userModel;
     _redis;
     jwtServices;
-    constructor(_userModel, _redis, jwtServices) {
+    s3Services;
+    constructor(_userModel, _redis, jwtServices, s3Services) {
         this._userModel = _userModel;
         this._redis = _redis;
         this.jwtServices = jwtServices;
+        this.s3Services = s3Services;
     }
     signUp = async (body) => {
         const { password, email, userName, address, age, gender, role, phone } = body;
@@ -72,12 +75,25 @@ let userServices = class userServices {
         });
         return { accessToken, refreshToken };
     };
+    upload = async (file) => {
+        return this.s3Services.uploadFile({
+            file,
+            path: `photos`,
+        });
+    };
+    uploadLargeFile = async (file) => {
+        return this.s3Services.uploadLargeFile({
+            file,
+            path: 'photos',
+        });
+    };
 };
 userServices = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [user_repo_1.default,
         redis_services_1.default,
-        jsonWebTokens_1.default])
+        jsonWebTokens_1.default,
+        s3Services_1.default])
 ], userServices);
 exports.default = userServices;
 //# sourceMappingURL=user.service.js.map

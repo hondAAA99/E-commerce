@@ -7,6 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.IsMatch = IsMatch;
+exports.isExists = isExists;
 const class_validator_1 = require("class-validator");
 let matchKey = class matchKey {
     validate(value, validationArguments) {
@@ -28,6 +29,31 @@ function IsMatch(constraints, validationOptions) {
             options: validationOptions,
             constraints,
             validator: matchKey,
+        });
+    };
+}
+let IsExistsConstraint = class IsExistsConstraint {
+    validate(value, args) {
+        const fields = args.constraints[0];
+        const object = args.object;
+        return fields.some((field) => Boolean(object[field]));
+    }
+    defaultMessage(args) {
+        const fields = args.constraints[0];
+        return `one of ${fields.join(', ')} must exist`;
+    }
+};
+IsExistsConstraint = __decorate([
+    (0, class_validator_1.ValidatorConstraint)({ name: 'isExists', async: false })
+], IsExistsConstraint);
+function isExists(fields, options) {
+    return function (constructor) {
+        (0, class_validator_1.registerDecorator)({
+            target: constructor,
+            propertyName: '',
+            options,
+            constraints: [fields],
+            validator: IsExistsConstraint,
         });
     };
 }

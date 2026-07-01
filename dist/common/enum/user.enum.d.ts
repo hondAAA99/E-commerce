@@ -1,8 +1,8 @@
-export declare const roleEnum: {
-    user: string;
-    admin: string;
-};
-export declare const genderEnum: {
-    male: string;
-    female: string;
-};
+export declare enum roleEnum {
+    user = "user",
+    admin = "admin"
+}
+export declare enum genderEnum {
+    male = "male",
+    female = "female"
+}

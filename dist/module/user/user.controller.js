@@ -19,6 +19,13 @@ const common_1 = require("@nestjs/common");
 const user_service_1 = __importDefault(require("./user.service"));
 const createUser_dto_1 = require("./userDTO/createUser.dto");
 const signInDTO_1 = require("./userDTO/signInDTO");
+const token_enum_1 = require("../../common/enum/token.enum");
+const Token_decorator_1 = require("../../common/decorators/Token.decorator");
+const user_enum_1 = require("../../common/enum/user.enum");
+const user_decorator_1 = require("../../common/decorators/user.decorator");
+const platform_express_1 = require("@nestjs/platform-express");
+const multer_fileUpload_1 = require("../../common/middleWare/multer.fileUpload");
+const multer_base_enum_1 = require("../../common/enum/multer.base.enum");
 let userController = class userController {
     _userServices;
     constructor(_userServices) {
@@ -29,6 +36,15 @@ let userController = class userController {
     }
     signIn(body) {
         return this._userServices.logIn(body);
+    }
+    getUser(user) {
+        return { user };
+    }
+    uploadFile(file) {
+        return this._userServices.upload;
+    }
+    uploadLageFile(file) {
+        return this._userServices.uploadLargeFile;
     }
 };
 __decorate([
@@ -45,6 +61,36 @@ __decorate([
     __metadata("design:paramtypes", [signInDTO_1.signInDTO]),
     __metadata("design:returntype", void 0)
 ], userController.prototype, "signIn", null);
+__decorate([
+    (0, common_1.Get)('/getUser'),
+    (0, Token_decorator_1.AuthDecorators)({
+        accessRole: [user_enum_1.roleEnum.user],
+        tokenType: token_enum_1.TokenTypeEnum.access_token,
+    }),
+    __param(0, (0, user_decorator_1.User)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], userController.prototype, "getUser", null);
+__decorate([
+    (0, common_1.Post)('/upload'),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('attachment', (0, multer_fileUpload_1.fileUpload)({ fileType: multer_base_enum_1.multerFileEnum.image }))),
+    __param(0, (0, common_1.UploadedFile)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], userController.prototype, "uploadFile", null);
+__decorate([
+    (0, common_1.Post)('/upload-large-file'),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('attachment', (0, multer_fileUpload_1.fileUpload)({
+        fileType: multer_base_enum_1.multerFileEnum.image,
+        storageType: multer_base_enum_1.multerStorageEnum.disk,
+    }))),
+    __param(0, (0, common_1.UploadedFile)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], userController.prototype, "uploadLageFile", null);
 userController = __decorate([
     (0, common_1.Controller)('/users'),
     __metadata("design:paramtypes", [user_service_1.default])

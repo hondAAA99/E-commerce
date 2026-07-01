@@ -23,6 +23,7 @@ let User = class User {
     age;
     profilePicture;
     role;
+    credentials;
 };
 exports.User = User;
 __decorate([
@@ -61,6 +62,10 @@ __decorate([
     (0, mongoose_1.Prop)({ type: String, default: user_enum_1.roleEnum.user, enum: user_enum_1.roleEnum }),
     __metadata("design:type", String)
 ], User.prototype, "role", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: Date }),
+    __metadata("design:type", Date)
+], User.prototype, "credentials", void 0);
 exports.User = User = __decorate([
     (0, mongoose_1.Schema)({
         toJSON: { virtuals: true },

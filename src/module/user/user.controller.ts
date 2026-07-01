@@ -1,8 +1,11 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  Param,
   Post,
+  Req,
   UploadedFile,
   UploadedFiles,
   UseInterceptors,
@@ -25,6 +28,7 @@ import {
   multerFileEnum,
   multerStorageEnum,
 } from '../../common/enum/multer.base.enum';
+import confirmUserDto from './userDTO/cofirmUser';
 @Controller('/users')
 class userController {
   constructor(private readonly _userServices: userService) {}
@@ -48,42 +52,41 @@ class userController {
     return { user };
   }
 
-  @Post('/upload')
-  @UseInterceptors(
-    FileInterceptor(
-      'attachment',
-      fileUpload({ fileType: multerFileEnum.image })
-    )
-  )
-  uploadFile(@UploadedFile() file: Express.Multer.File) {
-    return this._userServices.upload;
+  @Post('/confirm-email')
+  confirmUser(@Body() body: confirmUserDto) {
+    return this._userServices.confirmEmail(body);
   }
 
-  @Post('/upload-large-file')
-  @UseInterceptors(
-    FileInterceptor(
-      'attachment',
-      fileUpload({
-        fileType: multerFileEnum.image,
-        storageType: multerStorageEnum.disk,
-      })
-    )
-  )
-  uploadLageFile(@UploadedFile() file: Express.Multer.File) {
-    return this._userServices.uploadLargeFile;
+  @Get('/re-send-otp/:flag')
+  reSendOtp(@Param('flag') flag: string, @Body('email') email: string) {
+    return this._userServices.reSendOtp(flag, email);
   }
 
-  // @Post('/upload-large-files')
-  // @UseInterceptors(
-  //   FilesInterceptor(
-  //     'attachments',
-  //     2,
-  //     fileUpload({ fileType: multerFileEnum.image })
-  //   )
-  // )
-  // uploadLageFiles(@UploadedFiles() file: Express.Multer.File[]) {
-  //   return this._userServices;
-  // }
+  @Get('/access-token')
+  @AuthDecorators({
+    accessRole: [roleEnum.user, roleEnum.admin],
+    tokenType: TokenTypeEnum.refresh_token,
+  })
+  reGenerateAccessToken(@User() user: HUDoc) {
+    return this._userServices.reGenerateAccessToken(user);
+  }
+
+  @Post('/add-admin')
+  @AuthDecorators({
+    accessRole: [roleEnum.admin],
+  })
+  addAdmin(@Body() body: signUpDTO) {
+    return this._userServices.addAdmin(body);
+  }
+
+  @Delete('/log-out')
+  @AuthDecorators({
+    accessRole: [roleEnum.user, roleEnum.admin],
+    tokenType: TokenTypeEnum.refresh_token,
+  })
+  logout(@Param('flag') flag: string, @Req() req: any) {
+    return this._userServices.logout(flag, req);
+  }
 }
 
 export default userController;
