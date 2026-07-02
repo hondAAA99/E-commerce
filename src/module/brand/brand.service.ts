@@ -13,13 +13,17 @@ import {
 } from '../../common/globalresponse';
 import { ParamsidDto, updateBrandDto } from './brandDTO/update.brand.dto';
 import { getAllBrandsQuery } from './brandDTO/getAll.dto';
+import productRepo from '../../DataBase/repos/product.repo';
+import { HydratedDocument, Types } from 'mongoose';
+import { roleEnum } from '../../common/enum/user.enum';
 
 @Injectable()
 class brandServices {
   constructor(
     private readonly _brandModel: brandRepo,
     private readonly _userModel: userRepo,
-    private readonly s3Services: s3services
+    private readonly s3Services: s3services,
+    private readonly _productsRepo: productRepo
   ) {}
 
   async createBrand(
@@ -64,11 +68,15 @@ class brandServices {
     return brand;
   }
 
-  async updateBrand(brandId: ParamsidDto, body: updateBrandDto, user: HUDoc) {
+  async updateBrand(
+    brandId: Types.ObjectId,
+    body: updateBrandDto,
+    user: HUDoc
+  ) {
     const { BrandName, slogan } = body;
 
     const brand = await this._brandModel
-      .findOne({ filter: { id: brandId.brandId, createdBy: user.id } })
+      .findOne({ filter: { id: brandId, createdBy: user.id } })
       .catch((err) => {
         throw ErrorInternalServerError(
           'failed find the brand due to database error'
@@ -79,6 +87,9 @@ class brandServices {
       return ErrorBadRequest('can not find brand name');
     }
 
+    if (user.role != roleEnum.admin || user._id != brand.createdBy) {
+      return Errorforbidden('you are not authorized to update this brand');
+    }
     if (BrandName && BrandName === brand.BrandName) {
       return ErrorBadRequest('cannot edit the brand name to the same name');
     }
@@ -91,10 +102,11 @@ class brandServices {
     }
 
     const brandUpdate = await this._brandModel.findByIdAndUpdate({
-      id: brandId.brandId,
+      id: brandId,
       update: {
         ...(BrandName ? { BrandName } : undefined),
         ...(slogan ? { slogan } : undefined),
+        updatedBy: user.id,
       },
     });
 
@@ -117,6 +129,44 @@ class brandServices {
     });
 
     return brands;
+  }
+
+  async getBrand(id: Types.ObjectId) {
+    const brand = await this._brandModel
+      .findById({
+        id,
+      })
+      .catch((error) =>
+        ErrorInternalServerError('internal server error due to database')
+      );
+
+    if (!brand) throw new HttpException('brand not found', 404);
+
+    const products = this._productsRepo.findAll({ filter: { brandId: id } });
+
+    return { brand, products };
+  }
+
+  async deleteBrand(id: Types.ObjectId, user: HUDoc) {
+    const brand = this._brandModel
+      .findOneAndUpdate({
+        filter: {
+          id,
+          createdBy: user.role == roleEnum.admin ? undefined : user._id,
+        },
+        update: { deletedBy: user.id, deletedAt: Date.now() },
+      })
+      .catch((err) =>
+        ErrorInternalServerError('error due to dataBase')
+      ) as Promise<HydratedDocument<HUDoc> | null>;
+
+    if (!brand)
+      throw new HttpException(
+        'failed to delete the brand due to un-existance ',
+        404
+      );
+
+    return 'brand deleted';
   }
 }
 

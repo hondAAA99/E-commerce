@@ -5,10 +5,8 @@ import {
   Get,
   Param,
   Post,
+  Put,
   Req,
-  UploadedFile,
-  UploadedFiles,
-  UseInterceptors,
 } from '@nestjs/common';
 import userService from './user.service';
 import { signUpDTO } from './userDTO/createUser.dto';
@@ -18,17 +16,8 @@ import { AuthDecorators } from '../../common/decorators/Token.decorator';
 import { roleEnum } from '../../common/enum/user.enum';
 import { User } from '../../common/decorators/user.decorator';
 import type { HUDoc } from '../../DataBase/models/user/user.model';
-import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
-import type { Request } from 'express';
-import { Multer } from 'multer';
-import { MulterModule } from '@nestjs/platform-express';
-import multer from 'multer';
-import { fileUpload } from '../../common/middleWare/multer.fileUpload';
-import {
-  multerFileEnum,
-  multerStorageEnum,
-} from '../../common/enum/multer.base.enum';
 import confirmUserDto from './userDTO/cofirmUser';
+import updateUserDTO from './userDTO/update.dto';
 @Controller('/users')
 class userController {
   constructor(private readonly _userServices: userService) {}
@@ -86,6 +75,14 @@ class userController {
   })
   logout(@Param('flag') flag: string, @Req() req: any) {
     return this._userServices.logout(flag, req);
+  }
+
+  @Put('/update-user')
+  @AuthDecorators({
+    accessRole: [roleEnum.admin, roleEnum.user],
+  })
+  updateUser(@Body() body: updateUserDTO, @User() user: HUDoc) {
+    return this._userServices.updateUser(user, body);
   }
 }
 

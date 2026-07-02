@@ -1,7 +1,11 @@
 import {
   Body,
   Controller,
+  Get,
+  Param,
   Post,
+  Put,
+  Query,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
@@ -18,6 +22,8 @@ import {
   multerStorageEnum,
 } from '../../common/enum/multer.base.enum';
 import { fileUpload } from '../../common/middleWare/multer.fileUpload';
+import { Types } from 'mongoose';
+import updateProductDto from './product.dto/update.dto';
 
 @Controller('/product')
 class productController {
@@ -25,7 +31,7 @@ class productController {
 
   @Post('/create')
   @AuthDecorators({
-    accessRole: [roleEnum.admin],
+    accessRole: [roleEnum.admin, roleEnum.user],
   })
   @UseInterceptors(
     FileFieldsInterceptor(
@@ -52,6 +58,42 @@ class productController {
     files: { mainImg: Express.Multer.File; subImgs: Express.Multer.File[] }
   ) {
     return this._productServices.createProduct(user, body, files);
+  }
+
+  @Put('/update-product/:id')
+  @AuthDecorators({
+    accessRole: [roleEnum.admin, roleEnum.user],
+  })
+  updateBrand(
+    @Param('id') id: Types.ObjectId,
+    @User() user: HUDoc,
+    @Body() body: updateProductDto
+  ) {
+    return this._productServices.updateProduct(id, user, body);
+  }
+
+  @Get('/get-product/:id')
+  @AuthDecorators({
+    accessRole: [roleEnum.admin, roleEnum.user],
+  })
+  getproduct(@Param('id') id: Types.ObjectId) {
+    return this._productServices.getProduct(id);
+  }
+
+  @Get('/delete-product/:id')
+  @AuthDecorators({
+    accessRole: [roleEnum.admin, roleEnum.user],
+  })
+  deleteproduct(@Param('id') id: Types.ObjectId, @User() user: HUDoc) {
+    return this._productServices.deleteProduct(id, user);
+  }
+
+  @Get('/get-all-products')
+  @AuthDecorators({
+    accessRole: [roleEnum.admin, roleEnum.user],
+  })
+  getAllproducts(@Query() limit: number, page: number, search: any) {
+    return this._productServices.getAllProduct(limit, page, search);
   }
 }
 

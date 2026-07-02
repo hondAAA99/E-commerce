@@ -38,8 +38,8 @@ export class Brand {
   updatedAt: Date;
   @Prop({ type: Date })
   deletedAt: Date;
-  @Prop({ type: Date })
-  deletedBy: Date;
+  @Prop({ type: Types.ObjectId })
+  deletedBy: Types.ObjectId ;
 }
 
 export const BrandSchema = SchemaFactory.createForClass(Brand);

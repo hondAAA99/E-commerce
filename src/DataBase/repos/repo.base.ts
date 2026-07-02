@@ -2,8 +2,7 @@ import { _QueryFilter, QueryOptions, WithLevel1NestedPaths } from 'mongoose';
 import { PopulateOptions } from 'mongoose';
 import { UpdateQuery } from 'mongoose';
 import { ProjectionType } from 'mongoose';
-import { HydratedDocument, Model, QueryFilter, Schema } from 'mongoose';
-
+import { HydratedDocument, Model, QueryFilter, Types } from 'mongoose';
 
 abstract class repoBase<Tdocument> {
   constructor(protected readonly _model: Model<Tdocument>) {}
@@ -50,7 +49,7 @@ abstract class repoBase<Tdocument> {
     projection,
     options,
   }: {
-    id: Schema.Types.ObjectId | any;
+    id: Types.ObjectId | any;
     projection?: ProjectionType<Tdocument> | null | undefined;
     options?: QueryOptions<Tdocument>;
   }): Promise<HydratedDocument<Tdocument> | null> {
@@ -67,7 +66,7 @@ abstract class repoBase<Tdocument> {
     update,
     options,
   }: {
-    id: Schema.Types.ObjectId;
+    id: Types.ObjectId;
     update: UpdateQuery<Tdocument>;
     options?: QueryOptions<Tdocument> | null;
   }): Promise<HydratedDocument<Tdocument> | null> {
@@ -96,7 +95,7 @@ abstract class repoBase<Tdocument> {
     id,
     options,
   }: {
-    id: Schema.Types.ObjectId;
+    id: Types.ObjectId;
     options?: QueryOptions<Tdocument>;
   }) {
     return await this._model.findByIdAndDelete(id, options);

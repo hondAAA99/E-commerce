@@ -42,11 +42,6 @@ export class signUpDTO {
   @IsEnum(genderEnum)
   gender: string;
 
-  @IsOptional()
-  @IsString({ message: 'role must be user or admin' })
-  @IsEnum(roleEnum)
-  role: string;
-
   @IsString({ message: 'address must be of type string' })
   @IsOptional()
   address: string;

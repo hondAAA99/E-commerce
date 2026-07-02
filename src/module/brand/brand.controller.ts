@@ -18,8 +18,9 @@ import { User } from '../../common/decorators/user.decorator';
 import createBrandDto from './brandDTO/createBrand.dto';
 import { AuthDecorators } from '../../common/decorators/Token.decorator';
 import { roleEnum } from '../../common/enum/user.enum';
-import { ParamsidDto, updateBrandDto } from './brandDTO/update.brand.dto';
+import { updateBrandDto } from './brandDTO/update.brand.dto';
 import { getAllBrandsQuery } from './brandDTO/getAll.dto';
+import { Types } from 'mongoose';
 @Controller('/brand')
 class brandController {
   constructor(private readonly _brandServices: brandServices) {}
@@ -44,10 +45,10 @@ class brandController {
 
   @Put('/update-brand/:id')
   @AuthDecorators({
-    accessRole: [roleEnum.admin],
+    accessRole: [roleEnum.admin, roleEnum.user],
   })
   updateBrand(
-    @Param() brandId: ParamsidDto,
+    @Param('id') brandId: Types.ObjectId,
     @User() user: HUDoc,
     @Body() body: updateBrandDto
   ) {
@@ -56,10 +57,26 @@ class brandController {
 
   @Get('/get-all-brands')
   @AuthDecorators({
-    accessRole: [roleEnum.admin],
+    accessRole: [roleEnum.admin, roleEnum.user],
   })
   getAllBrands(@Query() query: getAllBrandsQuery) {
     return this._brandServices.getAllBrands(query);
+  }
+
+  @Get('/get-brand/:id')
+  @AuthDecorators({
+    accessRole: [roleEnum.admin, roleEnum.user],
+  })
+  getBrand(@Param('id') id: Types.ObjectId) {
+    return this._brandServices.getBrand(id);
+  }
+
+  @Get('/delete-brand/:id')
+  @AuthDecorators({
+    accessRole: [roleEnum.admin, roleEnum.user],
+  })
+  deleteBrand(@Param('id') id: Types.ObjectId, @User() user: HUDoc) {
+    return this._brandServices.deleteBrand(id, user);
   }
 }
 

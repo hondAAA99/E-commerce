@@ -13,6 +13,8 @@ import { sendEmail } from '../../common/utils/email/sendEmail';
 import mailEnum from '../../common/enum/mail.enum';
 import confirmUserDto from './userDTO/cofirmUser';
 import cacheKeyEnum from '../../common/enum/redis.base.enum';
+import updateUserDTO from './userDTO/update.dto';
+import { ErrorInternalServerError } from '../../common/globalresponse';
 
 @Injectable()
 class userServices {
@@ -181,6 +183,34 @@ class userServices {
       return 'logout success';
     }
   }
+
+  async updateUser(user: HUDoc, body: updateUserDTO) {
+    const { address, age, gender, userName } = body;
+
+    const updatedUser = this._userModel
+      .findOneAndUpdate({
+        filter: { _id: user._id },
+        update: {
+          address,
+          age,
+          gender,
+          userName,
+        },
+      })
+      .catch((err) => {
+        return ErrorInternalServerError(
+          'failed to update user due to database error'
+        );
+      });
+
+    if (!updatedUser) throw new HttpException('user not found', 404);
+
+    return updatedUser;
+  }
+
+  // update email
+  // update phone
+  // update password
 }
 
 export default userServices;

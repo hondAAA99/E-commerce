@@ -16,23 +16,25 @@ class product {
   description: string;
   @Prop({ type: String })
   slug: string;
-  @Prop({ type: Types.ObjectId, required: true })
+  @Prop({ type: Types.ObjectId, required: true, ref: 'brands' })
   brandId: Types.ObjectId;
   @Prop({ type: Types.ObjectId, required: true })
   categoryId: Types.ObjectId;
   //   @Prop({ type: Types.ObjectId, required: true })
   //   subCategoryId: Types.ObjectId;
 
-  @Prop({ type: Date })
-  createdAt: Date;
-  @Prop({ type: Date })
-  createdBy: Date;
+  @Prop({ type: Number, required: true })
+  createdAt: number;
+  @Prop({ type: Types.ObjectId , required: true })
+  createdBy: Types.ObjectId ;
   @Prop({ type: Date })
   deletedAt: Date;
   @Prop({ type: Date })
   deletedBy: Date;
   @Prop({ type: Date })
   updatedAt: Date;
+  @Prop({ type: Types.ObjectId, required: true, ref: 'brands' })
+  updatedBy: Types.ObjectId;
 
   @Prop({ type: Number, required: true })
   stock: number;
